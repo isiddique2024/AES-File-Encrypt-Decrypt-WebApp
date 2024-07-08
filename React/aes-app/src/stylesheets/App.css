@@ -1,0 +1,72 @@
+@import-normalize;
+@tailwind base;
+@tailwind components;
+
+@layer components {
+
+  body {
+    @apply bg-[#333B45] text-[#f5f5f5] m-0 min-h-screen flex justify-center items-start;
+  }
+  
+  .sidebar-icon {
+    @apply relative flex items-center justify-center h-14 w-14 mt-2 mb-2 mx-auto bg-[#333b45] text-[#A4AAB8] hover:text-white rounded-3xl transition-all duration-300 ease-linear cursor-pointer shadow-lg;
+  }
+
+  .sidebar-tooltip {
+    @apply absolute w-auto p-2 m-4 min-w-max left-14 rounded-md shadow-md text-[#A4AAB8] bg-[#2A323C] text-sm font-bold transition-all duration-300 scale-0 origin-left;
+  }
+
+  .sidebar-hr {
+    @apply bg-gray-800 border border-gray-800 rounded-full mx-2;
+  }
+
+  .select {
+    @apply bg-[#2A323C] border-transparent w-full font-semibold text-gray-300 hover:shadow-xl transition duration-300 ease-in-out hover:bg-blue-500 focus:bg-blue-500 focus:scale-105;
+  }
+
+  .input {
+    @apply bg-[#2A323C] font-semibold hover:shadow-xl transition duration-300 ease-in-out hover:bg-blue-500 focus:bg-blue-500 focus:scale-105;
+  }
+
+  .btn {
+    @apply bg-[#2A323C] text-[#f5f5f5] border-transparent flex justify-center items-center;
+  }
+
+  .pre {
+    @apply bg-[#3c3c3c] text-[#f5f5f5] border-transparent;
+  }
+
+  .heading {
+    @apply text-4xl text-gray-300 mb-4 text-center;
+  }
+
+  .label {
+    @apply block text-gray-300 text-base font-bold mb-2 text-center;
+  }
+
+  .input-file {
+    @apply file-input w-full max-w-sm file-input-md bg-[#2A323C] label-text hover:shadow-xl transition duration-300 ease-in-out hover:bg-blue-500 focus:bg-blue-500 focus:scale-105;
+  }
+
+  .button {
+    @apply btn btn-primary w-44 text-base text-gray-300 hover:shadow-xl transition duration-300 ease-in-out hover:bg-blue-500 focus:bg-blue-500 focus:scale-105;
+  }
+
+  .output-container {
+    @apply mt-7 rounded-lg bg-[#2A323C] flex flex-col min-w-96 hover:shadow-xl transition duration-300 ease-in-out hover:bg-blue-500 hover:scale-105;
+  }
+
+  .skeleton {
+    @apply mt-7 rounded-lg bg-[#2A323C] flex flex-col min-w-96 hover:shadow-xl transition duration-300 ease-in-out hover:bg-blue-500 hover:scale-105;
+  }
+
+  .output-text {
+    @apply p-4 text-gray-300 font-bold rounded bg-transparent text-left flex-wrap text-nowrap;
+  }
+}
+
+@tailwind utilities;
+
+::-webkit-scrollbar {
+  background-color: transparent;
+}
