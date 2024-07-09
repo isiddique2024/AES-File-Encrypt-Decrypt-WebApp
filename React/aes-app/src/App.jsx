@@ -1,6 +1,6 @@
 import React from "react";
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import SideBar from "./Components/SideBar";
+import SideBar from "./components/SideBar";
 import EncryptPage from './pages/Encryption'; // Import your component
 import DecryptPage from './pages/Decryption'; // Import your component
 
