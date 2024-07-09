@@ -63,7 +63,7 @@ async def encrypt_file(request: Request, param: models.encrypt_base):
 
         data_to_encrypt = param.file_hex
 
-        encrypt_obj = AES.new(key, AES.MODE_CBC, iv)
+        encrypt_obj = AES.new(key, param.blocker_cipher_mode, iv) # AES.MODE_CBC (2)
         file_encrypted = iv + encrypt_obj.encrypt(pad(data_to_encrypt.encode('utf-8'), block_size))
         
         file_b64_return = file_encrypted.hex()
@@ -103,7 +103,7 @@ async def decrypt_file(request: Request, param: models.decrypt_base):
 
     try:
         data_to_decrypt = file[AES.block_size:]
-        decrypt_obj = AES.new(key, AES.MODE_CBC, iv)
+        decrypt_obj = AES.new(key, param.blocker_cipher_mode, iv)
         decrypted_data = unpad(decrypt_obj.decrypt(data_to_decrypt), AES.block_size)
         file_b64_return = decrypted_data.decode('utf-8')
     except ValueError as e:

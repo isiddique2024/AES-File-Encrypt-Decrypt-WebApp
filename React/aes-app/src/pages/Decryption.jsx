@@ -5,6 +5,7 @@ import {api_service} from "../services/API";
 
 const fileDataDecrypt = signal();
 const fileName = signal();
+const modeDecrypt = signal(2);
 const key = signal('');
 const iv = signal('');
 const outputResponse = signal();
@@ -58,7 +59,8 @@ const DecryptPage = () => {
             const json_post_data = JSON.stringify({
                 file_encrypted: hex,
                 key: key,
-                iv: iv
+                iv: iv,
+                block_cipher_mode: modeDecrypt
             });
 
             var response = 0;
@@ -123,6 +125,31 @@ const DecryptPage = () => {
                         className="input-file bg-[#2A323C] "
                         onInput={handleFileChangeDecrypt}
                     />
+                    <div className="mt-4">
+                        <label className="label" htmlFor="modeDecrypt">
+                            Blocker Cipher Mode
+                        </label>
+                        <div>
+                            <select
+                                id="modeDecrypt"
+                                className="select"
+                                value={modeDecrypt}
+                                onChange={(e) => modeDecrypt.value = parseInt(e.target.value)}
+                            >
+                                <option value={1}>ECB (Electronic Code Book)</option>
+                                <option value={2}>CBC (Cipher-Block Chaining)</option>
+                                <option value={3}>CFB (Cipher Feedback)</option>
+                                <option value={5}>OFB (Output Feedback)</option>
+                                <option value={6}>CTR (Counter)</option>
+                                <option value={7}>OPENPGP (OpenPGP)</option>
+                                <option value={8}>CCM (Counter with CBC-MAC)</option>
+                                <option value={9}>EAX</option>
+                                <option value={10}>SIV (Synthetic Initialization Vector)</option>
+                                <option value={11}>GCM (Galois Counter Mode)</option>
+                                <option value={12}>OCB (Offset Code Book)</option>
+                            </select>
+                        </div>
+                    </div>
                     <div className="form-group mt-4 flex flex-col items-center">
                         <label className="label" htmlFor="encryptionKey">Encryption Key</label>
                         <input

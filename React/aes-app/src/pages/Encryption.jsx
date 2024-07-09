@@ -4,6 +4,7 @@ import { Buffer } from 'buffer';
 import {api_service} from "../services/API";
 const fileDataEncrypt = signal();
 const fileName = signal();
+const mode = signal(2);
 const keySize = signal(16);
 const outputKey = signal();
 const outputIV = signal();
@@ -56,7 +57,8 @@ const EncryptPage = () => {
   
       const json_post_data = JSON.stringify({ 
         file_hex: hex, 
-        key_size: keySize 
+        key_size: keySize,
+        blocker_cipher_mode: mode
       });
 
       var response = 0;
@@ -115,21 +117,46 @@ const EncryptPage = () => {
         <div className="container mx-auto p-20 bg-[#333b45] flex flex-col items-center">
         <h1 className="heading">File Encryption</h1>
         <form onSubmit={handleEncrypt}>
-            <div className="mb-4 flex flex-col w-72">
-              <label className="label" htmlFor="fileInput">
-                  Select a File
-              </label>
-              <span className="label-text-alt text-right">Max File Size: 3 MB</span>
-              <input
-                  type="file"
-                  id="fileInput"
-                  className="input-file bg-[#2A323C] "
-                  onInput={handleFileChangeEncrypt}
-              />
+          <div className="mb-4 flex flex-col w-72">
+            <label className="label" htmlFor="fileInput">
+                Select a File
+            </label>
+            <span className="label-text-alt text-right">Max File Size: 3 MB</span>
+            <input
+                type="file"
+                id="fileInput"
+                className="input-file bg-[#2A323C] "
+                onInput={handleFileChangeEncrypt}
+            />
+            </div>
+            <div className="mb-4">
+            <label className="label" htmlFor="mode">
+                Blocker Cipher Mode
+            </label>
+              <div>
+                <select
+                    id="mode"
+                    className="select"
+                    value={mode}
+                    onChange={(e) => mode.value = parseInt(e.target.value)}
+                >
+                    <option value={1}>ECB (Electronic Code Book)</option>
+                    <option value={2}>CBC (Cipher-Block Chaining)</option>
+                    <option value={3}>CFB (Cipher Feedback)</option>
+                    <option value={5}>OFB (Output Feedback)</option>
+                    <option value={6}>CTR (Counter)</option>
+                    <option value={7}>OPENPGP (OpenPGP)</option>
+                    <option value={8}>CCM (Counter with CBC-MAC)</option>
+                    <option value={9}>EAX</option>
+                    <option value={10}>SIV (Synthetic Initialization Vector)</option>
+                    <option value={11}>GCM (Galois Counter Mode)</option>
+                    <option value={12}>OCB (Offset Code Book)</option>
+                </select>
               </div>
+            </div>
             <div className="mb-4">
             <label className="label" htmlFor="keySize">
-                Select Key Size
+                Key Size
             </label>
               <div>
                 <select
