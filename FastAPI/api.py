@@ -21,12 +21,7 @@ from hashlib import sha3_256
 import utils
 server = FastAPI()
 
-origins = [
-    "http://localhost",
-    "http://localhost:3000",
-    "http://localhost:8000",
-]
-
+origins = ["*"]
 server.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
