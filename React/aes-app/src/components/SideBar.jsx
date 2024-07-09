@@ -19,9 +19,9 @@ const SideBar = () =>
 const SideBarIcon = ({ icon, text }) => (
   <div className="sidebar-icon group hover:shadow-xl">
     {icon}
-    <span className="sidebar-tooltip group-hover:scale-100 hover:shadow-md">
+    {/* <span className="sidebar-tooltip group-hover:scale-100 hover:shadow-md">
       {text}
-    </span>
+    </span> */}
   </div>
 );
   
