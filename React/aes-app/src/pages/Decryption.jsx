@@ -5,7 +5,7 @@ import {api_service} from "../services/API";
 
 const fileDataDecrypt = signal();
 const fileName = signal();
-const modeDecrypt = signal(2);
+const mode = signal(2);
 const key = signal('');
 const iv = signal('');
 const outputResponse = signal();
@@ -60,7 +60,7 @@ const DecryptPage = () => {
                 file_encrypted: hex,
                 key: key,
                 iv: iv,
-                block_cipher_mode: modeDecrypt
+                block_cipher_mode: mode
             });
 
             var response = 0;
@@ -126,27 +126,27 @@ const DecryptPage = () => {
                         onInput={handleFileChangeDecrypt}
                     />
                     <div className="mt-4">
-                        <label className="label" htmlFor="modeDecrypt">
-                            Blocker Cipher Mode
+                        <label className="label" htmlFor="mode">
+                            Block Cipher Mode
                         </label>
                         <div>
                             <select
-                                id="modeDecrypt"
+                                id="mode"
                                 className="select"
-                                value={modeDecrypt}
-                                onChange={(e) => modeDecrypt.value = parseInt(e.target.value)}
+                                value={mode}
+                                onChange={(e) => mode.value = parseInt(e.target.value)}
                             >
-                                <option value={1}>ECB (Electronic Code Book)</option>
+                                {/* <option value={1}>ECB (Electronic Code Book)</option> */}
                                 <option value={2}>CBC (Cipher-Block Chaining)</option>
                                 <option value={3}>CFB (Cipher Feedback)</option>
                                 <option value={5}>OFB (Output Feedback)</option>
-                                <option value={6}>CTR (Counter)</option>
-                                <option value={7}>OPENPGP (OpenPGP)</option>
-                                <option value={8}>CCM (Counter with CBC-MAC)</option>
+                                {/* <option value={6}>CTR (Counter)</option> */}
+                                {/* <option value={7}>OPENPGP (OpenPGP)</option> */}
+                                {/* <option value={8}>CCM (Counter with CBC-MAC)</option> */}
                                 <option value={9}>EAX</option>
-                                <option value={10}>SIV (Synthetic Initialization Vector)</option>
+                                {/* <option value={10}>SIV (Synthetic Initialization Vector)</option> */}
                                 <option value={11}>GCM (Galois Counter Mode)</option>
-                                <option value={12}>OCB (Offset Code Book)</option>
+                                {/* <option value={12}>OCB (Offset Code Book)</option> */}
                             </select>
                         </div>
                     </div>
