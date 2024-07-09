@@ -7,10 +7,10 @@ const SideBar = () =>
   return (
     <div className="fixed top-0 left-0 h-screen w-20 flex flex-col bg-[#2A323C] shadow-lg">
       <Link to="/encrypt">
-        <SideBarIcon icon={<FaLock size="25" />} text="Encrypt File" />
+        <SideBarIcon icon={<FaLock size="25" />} />
       </Link>
       <Link to="/decrypt">
-        <SideBarIcon icon={<FaUnlock size="25" />} text="Decrypt File" />
+        <SideBarIcon icon={<FaUnlock size="25" />} />
       </Link>
     </div>
   );
@@ -19,9 +19,6 @@ const SideBar = () =>
 const SideBarIcon = ({ icon, text }) => (
   <div className="sidebar-icon group hover:shadow-xl">
     {icon}
-    {/* <span className="sidebar-tooltip group-hover:scale-100 hover:shadow-md">
-      {text}
-    </span> */}
   </div>
 );
   
