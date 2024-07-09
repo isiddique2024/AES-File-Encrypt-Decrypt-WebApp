@@ -58,7 +58,7 @@ const EncryptPage = () => {
       const json_post_data = JSON.stringify({ 
         file_hex: hex, 
         key_size: keySize,
-        blocker_cipher_mode: mode
+        block_cipher_mode: mode
       });
 
       var response = 0;
