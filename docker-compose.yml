@@ -27,9 +27,12 @@ services:
     build: ./nginx
     container_name: nginx
     ports:
+      - "443:443"
       - "80:80"
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - /etc/ssl/certs/cloudflare_origin_cert.pem:/etc/nginx/certs/cloudflare_origin_cert.pem:ro
+      - /etc/ssl/private/cloudflare_origin_key.pem:/etc/nginx/certs/cloudflare_origin_key.pem:ro
     depends_on:
       - fastapi_backend
       - react_frontend
