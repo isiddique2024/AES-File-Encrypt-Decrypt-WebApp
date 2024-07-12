@@ -1,9 +1,9 @@
-import axios from 'axios';
+import axios from "axios";
 
 const api = axios.create({
   baseURL: window.location.origin, // http://localhost:8000/
   headers: {
-    'Content-Type': 'application/json',
+    "Content-Type": "application/json",
   },
 });
 
@@ -20,7 +20,6 @@ export const api_service = {
   decrypt(data) {
     return api.post(api_routes.decrypt, data);
   },
-
 };
 
 export default api_service;

@@ -35,14 +35,37 @@ services:
       "
     volumes:
       - ./React/aes-app:/usr/src/app
+      #- /usr/src/app/node_modules
 
-  nginx_dev:
+  nginx_http:
     image: nginx:alpine-slim
-    container_name: nginx-dev
+    container_name: nginx_http
     ports:
       - "80:80"
     volumes:
-      - ./nginx/nginx-dev.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/nginx-http.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - fastapi_backend
+      - react_frontend
+    networks:
+      - web
+    profiles:
+      - http
+
+  nginx_selfsign:
+    image: nginx:alpine-slim
+    container_name: nginx_selfsign
+    ports:
+      - "443:443"
+    volumes:
+      - ./nginx/nginx-selfsign.conf:/etc/nginx/nginx.conf:ro
+    entrypoint: >
+      sh -c "
+      apk add --no-cache openssl &&
+      mkdir -p /etc/nginx/certs &&
+      openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /etc/nginx/certs/selfsigned.key -out /etc/nginx/certs/selfsigned.crt -subj '/C=US/ST=State/L=City/O=Organization/OU=OrgUnit/CN=localhost' &&
+      nginx -g 'daemon off;'
+      "
     depends_on:
       - fastapi_backend
       - react_frontend
@@ -56,7 +79,6 @@ services:
     container_name: nginx-prod
     ports:
       - "443:443"
-      - "80:80"
     volumes:
       - ./nginx/nginx-prod.conf:/etc/nginx/nginx.conf:ro
       # make sure to modify path to cert and private key here

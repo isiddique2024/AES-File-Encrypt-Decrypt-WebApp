@@ -1,4 +1,4 @@
-from fastapi import FastAPI, HTTPException
+from fastapi import HTTPException
 
 valid_key_lengths = {32, 48, 64}
 
