@@ -5,6 +5,7 @@ import { Buffer } from "buffer";
 import { api_service } from "../services/API";
 import { fileTypeFromBuffer } from "file-type";
 import { FileUtility } from "../services/Utility";
+import OutputComponent from "../components/Output"
 
 const fileDataDecrypt = signal();
 const fileName = signal();
@@ -157,18 +158,11 @@ const DecryptPage = () => {
               )}
             </div>
           </form>
-          <h2 className="text-2xl text-gray-300 mt-5 font-bold text-center">
-            Output:
-          </h2>
-          {outputResponse.value && (
-            <div className="output-container flex-shrink">
-              <pre className="output-text">
-                Response: {outputResponse.value}
-              </pre>
-            </div>
-          )}
         </div>
       </div>
+      <OutputComponent
+        outputResponse={outputResponse}
+      />
     </div>
   );
 };

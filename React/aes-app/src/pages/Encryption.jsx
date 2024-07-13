@@ -4,7 +4,7 @@ import { useSignals } from "@preact/signals-react/runtime";
 import { Buffer } from "buffer";
 import { api_service } from "../services/API";
 import { FileUtility } from "../services/Utility";
-
+import OutputComponent from "../components/Output"
 const fileDataEncrypt = signal();
 const fileName = signal();
 const mode = signal(2);
@@ -57,7 +57,7 @@ const EncryptPage = () => {
   };
 
   return (
-    <div className="flex-auto flex-col items-center justify-center">
+    <div className="max-w-lg flex-auto flex-col items-center justify-center">
       <div className="main-content flex-auto">
         <div className="container mx-auto p-4 bg-[#333b45] flex-auto flex-col justify-center items-center rounded-lg shadow-lg w-full">
           <h1 className="heading">File Encryption</h1>
@@ -119,20 +119,13 @@ const EncryptPage = () => {
               )}
             </div>
           </form>
-          <h2 className="text-2xl text-gray-300 mt-5 font-bold text-center">
-            Output:
-          </h2>
-          {outputResponse.value && (
-            <div className="output-container flex-shrink">
-              <pre className="output-text">
-                Response: {outputResponse.value}
-              </pre>
-              <pre className="output-text">Key: {outputKey.value}</pre>
-              <pre className="output-text">IV: {outputIV.value}</pre>
-            </div>
-          )}
         </div>
       </div>
+      <OutputComponent
+        outputResponse={outputResponse}
+        outputKey={outputKey}
+        outputIV={outputIV}
+      />
     </div>
   );
 };
