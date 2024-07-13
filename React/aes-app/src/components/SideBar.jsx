@@ -2,9 +2,11 @@ import { FaLock } from "react-icons/fa";
 import { FaUnlock } from "react-icons/fa";
 import { Link } from "react-router-dom";
 
+// https://github.com/fireship-io/tailwind-dashboard with some modifications
+
 const SideBar = () => {
   return (
-    <div className="fixed top-0 left-0 h-screen w-20 flex flex-col bg-[#2A323C] shadow-lg">
+    <div className="fixed top-0 left-0 h-screen w-16 flex-auto flex-col bg-[#2A323C] shadow-lg z-10">
       <Link to="/encrypt">
         <SideBarIcon icon={<FaLock size="25" />} text="Encrypt File" />
       </Link>

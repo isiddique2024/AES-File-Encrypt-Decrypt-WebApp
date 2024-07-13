@@ -1,8 +1,10 @@
 import React from "react";
-import { signal, effect } from "@preact/signals-react";
+import { signal } from "@preact/signals-react";
+import { useSignals } from "@preact/signals-react/runtime";
 import { Buffer } from "buffer";
 import { api_service } from "../services/API";
 import { fileTypeFromBuffer } from "file-type";
+import { FileUtility } from "../services/Utility";
 
 const fileDataDecrypt = signal();
 const fileName = signal();
@@ -13,21 +15,7 @@ const outputResponse = signal();
 const loading = signal(false);
 
 const DecryptPage = () => {
-  const [, updateState] = React.useState();
-  const force_update = React.useCallback(() => updateState({}), []);
-
-  const handleFileChangeDecrypt = (event) => {
-    event.preventDefault();
-    if (event.target.files[0] === undefined) {
-      // if you select a file then click cancel in the file directory it will error, this is to prevent that
-      fileName.value = undefined;
-      fileDataDecrypt.value = undefined;
-      return;
-    }
-    console.log(`selected file to decrypt: ${event.target.files[0].name}`);
-    fileName.value = event.target.files[0].name;
-    fileDataDecrypt.value = event.target.files[0];
-  };
+  useSignals(); // makes components reactive
 
   const handleDecrypt = async (event) => {
     event.preventDefault();
@@ -51,130 +39,86 @@ const DecryptPage = () => {
       return;
     }
 
-    effect(() => {
-      loading.value = true;
-      force_update();
+    loading.value = true;
+
+    const hex = await FileUtility.fileToHex(fileDataDecrypt);
+
+    const json_post_data = JSON.stringify({
+      file_encrypted: hex,
+      key: key.value,
+      iv: iv.value,
+      block_cipher_mode: mode.value,
     });
 
-    const byte_array = new Uint8Array(
-      await fileDataDecrypt.value.arrayBuffer()
-    );
-    if (byte_array) {
-      const hex = Array.from(byte_array)
-        .map((b) => b.toString(16).padStart(2, "0"))
-        .join("");
+    const response = await api_service("decrypt", json_post_data);
 
-      const json_post_data = JSON.stringify({
-        file_encrypted: hex,
-        key: key,
-        iv: iv,
-        block_cipher_mode: mode,
-      });
-
-      var response = 0;
-      try {
-        response = await api_service.decrypt(json_post_data);
-      } catch (error) {
-        if (error.response) {
-          // The request was made and the server responded with a status code
-          // that falls out of the range of 2xx
-          console.error("Error status:", error.response.status);
-          console.error("Error detail:", error.response.data.detail);
-          outputResponse.value = "Error, " + error.response.data.detail;
-        } else if (error.request) {
-          // The request was made but no response was received
-          console.error("No response received:", error.request);
-          outputResponse.value = "Error, " + error.request;
-        } else {
-          // Something happened in setting up the request that triggered an Error
-          console.error("Error", error.message);
-          outputResponse.value = "Error, " + error.message;
-        }
-        effect(() => {
-          loading.value = false;
-          force_update();
-        });
-        return;
-      }
-
-      console.log(response.data);
-
-      const decrypted_hex = Uint8Array.from(
-        Buffer.from(response.data.file_decrypted, "hex")
-      );
-
-      const file_type = await fileTypeFromBuffer(decrypted_hex);
-      let file_ext = "bin";
-
-      if (file_type) {
-        file_ext = file_type.ext;
-      }
-
-      const decrypted_file = new Blob([decrypted_hex], {
-        type: "application/octet-stream",
-      });
-      const url = URL.createObjectURL(decrypted_file);
-
-      const link = document.createElement("a");
-      link.href = url;
-      link.download = `decrypted_file.${file_ext}`;
-      document.body.appendChild(link);
-      link.click();
-
-      URL.revokeObjectURL(url);
-      document.body.removeChild(link);
-
-      outputResponse.value = "Successfully decrypted";
+    if (!response.success) {
+      outputResponse.value = response.message;
+      loading.value = false;
+      return;
     }
 
-    effect(() => {
-      loading.value = false;
-      force_update();
-    });
+    console.log(response.data);
+
+    const decryptedHex = Uint8Array.from(
+      Buffer.from(response.data.file_decrypted, "hex")
+    );
+
+    const fileType = await fileTypeFromBuffer(decryptedHex);
+    let fileExtension = "bin";
+
+    if (fileType) {
+      fileExtension = fileType.ext;
+    }
+
+    FileUtility.downloadFileFromBuffer(
+      decryptedHex,
+      `decrypted_file.${fileExtension}`
+    );
+
+    outputResponse.value = "Successfully decrypted";
+
+    loading.value = false;
   };
 
   return (
-    <div className="flex-grow min-w-96">
-      <div className="container p-20 flex flex-col items-center">
-        <h1 className="heading">File Decryption</h1>
-        <form onSubmit={handleDecrypt}>
-          <div className="mb-4 flex flex-col w-72">
-            <label className="label" htmlFor="fileInput">
-              Select a File
-            </label>
-            <span className="label-text-alt text-right">
-              Max File Size: 3 MB
-            </span>
-            <input
-              type="file"
-              id="fileInput"
-              className="input-file bg-[#2A323C] "
-              onInput={handleFileChangeDecrypt}
-            />
-            <div className="mt-4">
+    <div className="flex-auto flex-col items-center justify-center">
+      <div className="main-content flex-auto">
+        <div className="container mx-auto p-4 bg-[#333b45] flex-auto flex-col justify-center items-center rounded-lg shadow-lg w-full">
+          <h1 className="heading">File Decryption</h1>
+          <form onSubmit={handleDecrypt} className="w-full">
+            <div className="mb-4 flex flex-col items-center">
+              <label className="label" htmlFor="fileInput">
+                Select a File
+              </label>
+              <span className="text-gray-400 text-sm mb-2 block">
+                Max File Size: 3 MB
+              </span>
+              <input
+                type="file"
+                id="fileInput"
+                className="input-file"
+                onInput={(event) =>
+                  FileUtility.handleFileChange(event, fileName, fileDataDecrypt)
+                }
+              />
+            </div>
+            <div className="mb-4">
               <label className="label" htmlFor="mode">
                 Block Cipher Mode
               </label>
-              <div>
-                <select
-                  id="mode"
-                  className="select"
-                  value={mode}
-                  onChange={(e) => (mode.value = parseInt(e.target.value))}
-                >
-                  {/* <option value={1}>ECB (Electronic Code Book)</option> */}
-                  <option value={2}>CBC (Cipher-Block Chaining)</option>
-                  <option value={3}>CFB (Cipher Feedback)</option>
-                  <option value={5}>OFB (Output Feedback)</option>
-                  {/* <option value={6}>CTR (Counter)</option> */}
-                  {/* <option value={7}>OPENPGP (OpenPGP)</option> */}
-                  {/* <option value={8}>CCM (Counter with CBC-MAC)</option> */}
-                  <option value={9}>EAX</option>
-                  {/* <option value={10}>SIV (Synthetic Initialization Vector)</option> */}
-                  <option value={11}>GCM (Galois Counter Mode)</option>
-                  {/* <option value={12}>OCB (Offset Code Book)</option> */}
-                </select>
-              </div>
+              <select
+                id="mode"
+                className="select"
+                value={mode}
+                onChange={(e) => (mode.value = parseInt(e.target.value))}
+              >
+                <option value={2}>CBC (Cipher-Block Chaining)</option>
+                <option value={3}>CFB (Cipher Feedback)</option>
+                <option value={5}>OFB (Output Feedback)</option>
+                <option value={9}>EAX</option>
+                <option value={11}>GCM (Galois Counter Mode)</option>
+              </select>
             </div>
             <div className="form-group mt-4 flex flex-col items-center">
               <label className="label" htmlFor="encryptionKey">
@@ -204,22 +148,26 @@ const DecryptPage = () => {
                 onChange={(e) => (iv.value = e.target.value)}
               />
             </div>
-          </div>
-          <div className="mb-4 flex items-center flex-row justify-center">
-            <button type="submit" className="button">
-              Decrypt
-            </button>
-            {loading.value && (
-              <span className="loading loading-spinner loading-lg ml-3"></span>
-            )}
-          </div>
-        </form>
-        <h2 className="text-2xl text-gray-300 mt-5 font-bold">Output:</h2>
-        {
-          <div className="skeleton">
-            <pre className="output-text">Response: {outputResponse}</pre>
-          </div>
-        }
+            <div className="mt-4 flex items-center justify-center space-x-3">
+              <button type="submit" className="button flex-shrink">
+                Decrypt
+              </button>
+              {loading.value && (
+                <span className="loading loading-spinner loading-lg"></span>
+              )}
+            </div>
+          </form>
+          <h2 className="text-2xl text-gray-300 mt-5 font-bold text-center">
+            Output:
+          </h2>
+          {outputResponse.value && (
+            <div className="output-container flex-shrink">
+              <pre className="output-text">
+                Response: {outputResponse.value}
+              </pre>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
