@@ -123,8 +123,8 @@ const EncryptPage = () => {
       </div>
       <OutputComponent
         outputResponse={outputResponse}
-        outputKey={outputKey}
-        outputIV={outputIV}
+        Key={outputKey}
+        IV={outputIV}
       />
     </div>
   );
