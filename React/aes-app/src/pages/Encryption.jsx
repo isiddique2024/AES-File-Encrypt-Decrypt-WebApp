@@ -4,7 +4,8 @@ import { useSignals } from "@preact/signals-react/runtime";
 import { Buffer } from "buffer";
 import { api_service } from "../services/API";
 import { FileUtility } from "../services/Utility";
-import OutputComponent from "../components/Output"
+import OutputComponent from "../components/Output";
+
 const fileDataEncrypt = signal();
 const fileName = signal();
 const mode = signal(2);
@@ -29,13 +30,13 @@ const EncryptPage = () => {
 
     const hex = await FileUtility.fileToHex(fileDataEncrypt);
 
-    const json_post_data = JSON.stringify({
+    const jsonData = JSON.stringify({
       file_hex: hex,
       key_size: keySize.value,
       block_cipher_mode: mode.value,
     });
 
-    const response = await api_service("encrypt", json_post_data);
+    const response = await api_service("encrypt", jsonData);
 
     if (!response.success) {
       outputResponse.value = response.message;
@@ -74,7 +75,7 @@ const EncryptPage = () => {
                 id="fileInput"
                 className="input-file"
                 onInput={(event) =>
-                  FileUtility.handleFileChange(event, fileName, fileDataEncrypt)
+                  FileUtility.handleFileInput(event, fileName, fileDataEncrypt)
                 }
               />
             </div>

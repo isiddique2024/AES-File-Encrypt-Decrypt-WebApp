@@ -13,7 +13,7 @@ export const FileUtility = {
     document.body.removeChild(link);
   },
 
-  handleFileChange(event, fileName, fileData) {
+  handleFileInput(event, fileName, fileData) {
     event.preventDefault();
 
     const file = event.target.files[0];

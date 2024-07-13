@@ -5,7 +5,7 @@ import { Buffer } from "buffer";
 import { api_service } from "../services/API";
 import { fileTypeFromBuffer } from "file-type";
 import { FileUtility } from "../services/Utility";
-import OutputComponent from "../components/Output"
+import OutputComponent from "../components/Output";
 
 const fileDataDecrypt = signal();
 const fileName = signal();
@@ -44,14 +44,14 @@ const DecryptPage = () => {
 
     const hex = await FileUtility.fileToHex(fileDataDecrypt);
 
-    const json_post_data = JSON.stringify({
+    const jsonData = JSON.stringify({
       file_encrypted: hex,
       key: key.value,
       iv: iv.value,
       block_cipher_mode: mode.value,
     });
 
-    const response = await api_service("decrypt", json_post_data);
+    const response = await api_service("decrypt", jsonData);
 
     if (!response.success) {
       outputResponse.value = response.message;
@@ -100,7 +100,7 @@ const DecryptPage = () => {
                 id="fileInput"
                 className="input-file"
                 onInput={(event) =>
-                  FileUtility.handleFileChange(event, fileName, fileDataDecrypt)
+                  FileUtility.handleFileInput(event, fileName, fileDataDecrypt)
                 }
               />
             </div>
@@ -160,9 +160,7 @@ const DecryptPage = () => {
           </form>
         </div>
       </div>
-      <OutputComponent
-        outputResponse={outputResponse}
-      />
+      <OutputComponent outputResponse={outputResponse} />
     </div>
   );
 };
