@@ -43,3 +43,7 @@ If you want to run this web application locally or contribute to the project:
 ## License
 
 This project is open source and available under the MIT License.
+
+## Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
